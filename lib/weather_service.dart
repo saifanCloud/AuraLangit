@@ -29,6 +29,7 @@ class CurrentWeather {
   final int visibility;
   final double lat;
   final double lon;
+  final int timezone;
 
   const CurrentWeather({
     required this.cityName,
@@ -44,6 +45,7 @@ class CurrentWeather {
     required this.visibility,
     required this.lat,
     required this.lon,
+    required this.timezone,
   });
 
   /// Factory dari JSON OpenWeatherMap API.
@@ -64,6 +66,7 @@ class CurrentWeather {
       visibility: json['visibility'] as int? ?? 10000,
       lat: (json['coord']['lat'] as num).toDouble(),
       lon: (json['coord']['lon'] as num).toDouble(),
+      timezone: json['timezone'] as int? ?? 25200,
     );
   }
 
@@ -125,6 +128,7 @@ CurrentWeather _buildMockCurrentWeather({String cityName = _kMockCity}) {
     visibility: 10000,
     lat: _kMockLat,
     lon: _kMockLon,
+    timezone: 25200,
   );
 }
 

@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>What-Her Weather</string>
+	<string>AuraLangit</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -15,7 +15,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>weather_app</string>
+	<string>auralangit</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -31,9 +31,9 @@
 	<!-- IZIN LOKASI UNTUK iOS (Wajib ditambahkan)                    -->
 	<!-- ============================================================ -->
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>What-Her Weather memerlukan akses lokasi Anda untuk menampilkan cuaca di sekitar Anda secara real-time.</string>
+	<string>AuraLangit memerlukan akses lokasi Anda untuk menampilkan cuaca di sekitar Anda secara real-time.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>What-Her Weather memerlukan akses lokasi Anda untuk menampilkan cuaca di sekitar Anda secara real-time.</string>
+	<string>AuraLangit memerlukan akses lokasi Anda untuk menampilkan cuaca di sekitar Anda secara real-time.</string>
 
 	<key>UIApplicationSceneManifest</key>
 	<dict>

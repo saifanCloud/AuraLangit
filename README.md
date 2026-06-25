@@ -1,4 +1,4 @@
-# ⛅ What-Her Weather
+# ⛅ AuraLangit
 
 Aplikasi cuaca premium dengan desain modern yang menyajikan informasi cuaca real-time dan prediktif. Dibangun menggunakan **Flutter** dengan sentuhan estetika **Glassmorphic UI**, transisi warna dinamis, penentuan tema adaptif otomatis (siang/malam), serta integrasi GPS dan penyimpanan lokal.
 
@@ -67,7 +67,7 @@ Ikuti langkah-langkah di bawah ini untuk menjalankan proyek ini di komputer loka
 ### Langkah 1: Clone Repositori
 ```bash
 git clone <repository-url>
-cd weather_app
+cd auralangit
 ```
 
 ### Langkah 2: Mengambil Dependensi
@@ -100,3 +100,31 @@ flutter run
 - **Custom Shader Mask**: Digunakan pada teks suhu utama di `home_screen.dart` untuk memberikan gradasi warna teks yang memikat (warna dasar putih ke warna aksen cuaca).
 - **Theme Transitions**: Transisi perpindahan tema siang ke malam dirancang halus dengan durasi `500ms` menggunakan kurva `easeInOut` bawaan MaterialApp.
 - **Partikel Bintang**: Di `splash_screen.dart`, terdapat partikel bintang dekoratif acak yang bersinar lembut di atas langit malam gradasi ungu-biru tua.
+
+---
+
+## 📱 LinkedIn Caption / Posting Share
+
+If you want to share a preview/screenshot of this project on LinkedIn, you can use the following English template:
+
+```text
+🚀 AuraLangit: Elevating Weather App Design with Flutter & Glassmorphic UI! ⛅
+
+Excited to share a sneak peek of my latest project: AuraLangit, a premium weather application featuring a sleek, modern aesthetic and interactive real-time forecasts. 
+
+This app is built using Flutter, with a strong focus on high-fidelity design and a seamless user experience. Here is a breakdown of what went into it:
+
+✨ Key Features & Implementation:
+1️⃣ Glassmorphic UI – Created a clean, semi-transparent card layout with soft blur effects and subtle borders for a high-end, premium feel.
+2️⃣ Dynamic Themes & Backgrounds – The UI adaptively changes gradients and themes based on the weather conditions (sunny, rainy, cloudy, stormy, snowy) and time of day (day/night) for the searched location.
+3️⃣ Real-Time Clock & Date – Embedded a live running clock with local formatting to keep users contextually aware.
+4️⃣ GPS Location Detection – Integrated geolocator and geocoding to automatically resolve local weather conditions instantly using the device's GPS coordinates.
+5️⃣ 7-Day Interactive Forecast – Displays comprehensive weekly forecasts complete with custom weather icons and high/low temperature metrics.
+
+Designing AuraLangit challenged me to push the boundaries of what is possible with Flutter's styling capabilities and state management to deliver an interface that is not only functional but visually captivating.
+
+Would love to hear your feedback on the UI and features! Let me know your thoughts in the comments below. 👇
+
+#Flutter #Dart #MobileDevelopment #UIUXDesign #Glassmorphism #AuraLangit #AppDevelopment #DeveloperShowcase
+```
+

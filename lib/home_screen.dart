@@ -116,7 +116,9 @@ class _HomeScreenState extends State<HomeScreen>
   String? _errorMessage;
 
   // ── State UI ──────────────────────────────────────────────
-  DateTime _now = DateTime.now();
+  String _gpsCityName = 'Mencari Lokasi...';
+  DateTime _gpsTime = DateTime.now();
+  DateTime _targetTime = DateTime.now();
   Timer? _clockTimer;
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
@@ -158,14 +160,66 @@ class _HomeScreenState extends State<HomeScreen>
     } else {
       _loadWeather(city: 'Jakarta');
     }
+
+    // Inisialisasi lokasi GPS untuk jam kiri
+    _initGpsLocation();
   }
 
   // ── Clock Timer ──────────────────────────────────────────
 
   void _startClock() {
     _clockTimer = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (mounted) setState(() => _now = DateTime.now());
+      if (mounted) {
+        setState(() {
+          _gpsTime = DateTime.now();
+          if (_currentWeather != null) {
+            _targetTime = DateTime.now().toUtc().add(Duration(seconds: _currentWeather!.timezone));
+          } else {
+            _targetTime = DateTime.now();
+          }
+        });
+      }
     });
+  }
+
+  /// Menginisialisasi lokasi GPS perangkat secara asinkron.
+  Future<void> _initGpsLocation() async {
+    try {
+      final permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.always ||
+          permission == LocationPermission.whileInUse) {
+        final position = await Geolocator.getLastKnownPosition().timeout(
+          const Duration(seconds: 2),
+          onTimeout: () => null,
+        ) ?? await Geolocator.getCurrentPosition(
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.low,
+            timeLimit: Duration(seconds: 5),
+          ),
+        );
+        final cityName = await _weatherService.getCityNameFromCoordinates(
+          position.latitude,
+          position.longitude,
+        );
+        if (mounted) {
+          setState(() {
+            _gpsCityName = cityName;
+          });
+        }
+      } else {
+        if (mounted) {
+          setState(() {
+            _gpsCityName = 'GPS Tidak Diizinkan';
+          });
+        }
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _gpsCityName = 'GPS Tidak Aktif';
+        });
+      }
+    }
   }
 
   // ── Weather Loading ──────────────────────────────────────
@@ -193,6 +247,8 @@ class _HomeScreenState extends State<HomeScreen>
           position.latitude,
           position.longitude,
         );
+        // Perbarui nama kota GPS/asli
+        _gpsCityName = weather.cityName;
       } else {
         // Berdasarkan nama kota
         final targetCity = (city?.trim().isNotEmpty == true)
@@ -275,7 +331,7 @@ class _HomeScreenState extends State<HomeScreen>
       return isNightFromIconCode(_currentWeather!.weatherIcon);
     }
     // Fallback: waktu lokal perangkat
-    final hour = _now.hour;
+    final hour = _gpsTime.hour;
     return hour < 6 || hour >= 19;
   }
 
@@ -489,8 +545,8 @@ class _HomeScreenState extends State<HomeScreen>
   // ── Clock & Date ──────────────────────────────────────────
 
   Widget _buildClockSection() {
-    final timeStr = DateFormat('HH:mm:ss').format(_now);
-    final dateStr = DateFormat('EEEE, d MMMM yyyy', 'id_ID').format(_now);
+    final gpsTimeStr = DateFormat('HH:mm:ss').format(_gpsTime);
+    final targetTimeStr = DateFormat('HH:mm:ss').format(_targetTime);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -500,40 +556,111 @@ class _HomeScreenState extends State<HomeScreen>
         border: Border.all(color: _glassBorderSubtle),
       ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.access_time_rounded,
-            color: _accentColor,
-            size: 20,
-          ),
-          const SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                timeStr,
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w700,
-                  color: _onSurface,
-                  letterSpacing: 2,
-                  shadows: [
-                    Shadow(
-                      color: _accentColor.withOpacity(0.5),
-                      blurRadius: 8,
+          // Jam GPS asli (kiri)
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Icon(
+                      Icons.my_location_rounded,
+                      color: _accentColor,
+                      size: 14,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      gpsTimeStr,
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w700,
+                        color: _onSurface,
+                        letterSpacing: 1,
+                        shadows: [
+                          Shadow(
+                            color: _accentColor.withOpacity(0.3),
+                            blurRadius: 6,
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
-              ),
-              Text(
-                dateStr,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: _onSurface.withOpacity(0.65),
-                  letterSpacing: 0.5,
+                const SizedBox(height: 4),
+                Text(
+                  _gpsCityName,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: _onSurface.withOpacity(0.7),
+                  ),
+                  textAlign: TextAlign.end,
+                  overflow: TextOverflow.ellipsis,
                 ),
+              ],
+            ),
+          ),
+
+          // Pemisah "/"
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              '/',
+              style: TextStyle(
+                fontSize: 26,
+                fontWeight: FontWeight.w300,
+                color: _accentColor,
               ),
-            ],
+            ),
+          ),
+
+          // Jam cuaca kota yang dilihat (kanan)
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      targetTimeStr,
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w700,
+                        color: _onSurface,
+                        letterSpacing: 1,
+                        shadows: [
+                          Shadow(
+                            color: _accentColor.withOpacity(0.3),
+                            blurRadius: 6,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Icon(
+                      Icons.public_rounded,
+                      color: _accentColor,
+                      size: 14,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  _currentWeather?.cityName ?? 'Memuat...',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: _onSurface.withOpacity(0.7),
+                  ),
+                  textAlign: TextAlign.start,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
           ),
         ],
       ),

@@ -1,12 +1,12 @@
 // test/widget_test.dart
 //
-// Unit & widget tests untuk aplikasi What-Her Weather.
+// Unit & widget tests untuk aplikasi AuraLangit.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:weather_app/weather_service.dart';
-import 'package:weather_app/splash_screen.dart';
+import 'package:auralangit/weather_service.dart';
+import 'package:auralangit/splash_screen.dart';
 
 void main() {
   setUpAll(() async {
@@ -56,6 +56,7 @@ void main() {
       expect(weather.visibility, 8000);
       expect(weather.lat, -6.2088);
       expect(weather.lon, 106.8456);
+      expect(weather.timezone, 25200);
     });
 
     test('getWeatherEmoji returns correct emoji', () {
@@ -98,8 +99,8 @@ void main() {
         );
         
         // Memastikan teks penting pada SplashScreen dirender
-        expect(find.text('WHAT-HER'), findsOneWidget);
-        expect(find.text('WEATHER'), findsOneWidget);
+        expect(find.text('AURA'), findsOneWidget);
+        expect(find.text('LANGIT'), findsOneWidget);
         
         // Biarkan timer splash screen selesai (3 detik + buffer)
         await Future.delayed(const Duration(seconds: 4));

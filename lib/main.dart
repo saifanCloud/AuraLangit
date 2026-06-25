@@ -1,6 +1,6 @@
 // lib/main.dart
 //
-// Entry point aplikasi What-Her Weather.
+// Entry point aplikasi AuraLangit.
 // Menginisialisasi localization (intl), mengatur orientasi,
 // dan menerapkan Dynamic Theming (siang/malam) via ValueNotifier.
 
@@ -23,11 +23,11 @@ Future<void> main() async {
     DeviceOrientation.portraitDown,
   ]);
 
-  runApp(const WhatHerWeatherApp());
+  runApp(const AuraLangitApp());
 }
 
-class WhatHerWeatherApp extends StatelessWidget {
-  const WhatHerWeatherApp({super.key});
+class AuraLangitApp extends StatelessWidget {
+  const AuraLangitApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +49,7 @@ class WhatHerWeatherApp extends StatelessWidget {
 
         return MaterialApp(
           // ── Identitas Aplikasi ──────────────────────────────────
-          title: 'What-Her Weather',
+          title: 'AuraLangit',
           debugShowCheckedModeBanner: false,
 
           // ── Tema Dinamis ─────────────────────────────────────────
