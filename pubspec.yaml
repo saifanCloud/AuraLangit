@@ -17,11 +17,23 @@ dependencies:
   http: ^1.2.0
   shared_preferences: ^2.3.3
   intl: ^0.20.1
+  
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.13.1
 
 flutter:
   uses-material-design: true
+  # Tambahkan baris di bawah ini agar folder assets terbaca oleh Flutter
+  assets:
+    - assets/images/ 
+    # Atau - assets/icons/ sesuaikan dengan nama folder yang kamu pakai
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/icon.png" # Pastikan path ini sesuai dengan folder baru
+  # min_sdk_android: 21 # (Opsional) bisa ditambahkan jika perlu
