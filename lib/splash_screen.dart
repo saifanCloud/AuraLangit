@@ -182,7 +182,7 @@ class _SplashScreenState extends State<SplashScreen>
 
                     // ── Tagline ────────────────────────────────
                     const Text(
-                      'Informasi cuaca presisi & elegan',
+                      'Precise & Elegant Weather App',
                       style: TextStyle(
                         fontSize: 12,
                         color: Color(0xFF94A3B8),

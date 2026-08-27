@@ -14,8 +14,8 @@ Future<void> main() async {
   // Pastikan Flutter engine sudah siap sebelum memanggil platform API
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Inisialisasi data lokal Bahasa Indonesia untuk intl (hari, bulan, dll.)
-  await initializeDateFormatting('id_ID', null);
+  // Inisialisasi data lokal Bahasa Inggris (en_US) untuk intl (hari, bulan, dll.)
+  await initializeDateFormatting('en_US', null);
 
   // Paksa orientasi portrait
   await SystemChrome.setPreferredOrientations([
