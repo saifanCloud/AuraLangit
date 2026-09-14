@@ -501,8 +501,7 @@ class _HomeScreenState extends State<HomeScreen>
         return 'https://images.unsplash.com/photo-1517299321529-639f8c26d4a1?q=80&w=1000&auto=format&fit=crop';
       case 'clouds':
       default:
-        // Gambar awan mendung sesuai desain SkyCast
-        return 'https://lh3.googleusercontent.com/aida-public/AB6AXuAH0fbKJ7fnYFZ3QoEZ97eteyUODzYZWoSIsEZ5wWQclT62Ewfyt65WrShFkmTcz9A_DViUJf7tfb_Th7W97yEVaG2thpuc1urIdO9CvE5DKBJ-CgktYHs-LYJgkQ26ouFNpIDgeIX4Dj9RKKE5IGDNzy2zRTfLT6RHSPc4XjaGiWbE6G9fHOUG8NZLV9_ZOGPcg8GzWTW9OjUsPpEKG_NvvM9tLd7za0QI_K26utoeTadJ3WEO7HkO';
+        return 'https://images.unsplash.com/photo-1534088568595-a066f410bcda?q=80&w=1000&auto=format&fit=crop';
     }
   }
 
@@ -543,23 +542,23 @@ class _HomeScreenState extends State<HomeScreen>
 
   /// Background glassmorphism card (frosted slate-cloud grey tint untuk nuansa awan mendung alami).
   Color get _glassBackground => _isNight
-      ? Colors.black.withOpacity(0.40)
-      : const Color(0xFF334155).withOpacity(0.35);
+      ? Colors.black.withValues(alpha: 0.40)
+      : const Color(0xFF334155).withValues(alpha: 0.35);
 
   /// Background glassmorphism yang lebih subtle.
   Color get _glassBackgroundSubtle => _isNight
-      ? Colors.black.withOpacity(0.28)
-      : const Color(0xFF334155).withOpacity(0.22);
+      ? Colors.black.withValues(alpha: 0.28)
+      : const Color(0xFF334155).withValues(alpha: 0.22);
 
   /// Border glassmorphism card (sangat halus & smooth di malam hari, jernih di siang hari).
   Color get _glassBorder => _isNight
-      ? Colors.white.withOpacity(0.08)
-      : Colors.white.withOpacity(0.25);
+      ? Colors.white.withValues(alpha: 0.08)
+      : Colors.white.withValues(alpha: 0.25);
 
   /// Border glassmorphism yang lebih subtle (seamless blend).
   Color get _glassBorderSubtle => _isNight
-      ? Colors.white.withOpacity(0.05)
-      : Colors.white.withOpacity(0.15);
+      ? Colors.white.withValues(alpha: 0.05)
+      : Colors.white.withValues(alpha: 0.15);
 
   // ── Dispose ──────────────────────────────────────────────
 
@@ -600,6 +599,18 @@ class _HomeScreenState extends State<HomeScreen>
                 width: double.infinity,
                 height: double.infinity,
                 fit: BoxFit.cover,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: _backgroundGradient,
+                      ),
+                    ),
+                  );
+                },
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
                     decoration: BoxDecoration(
@@ -625,11 +636,11 @@ class _HomeScreenState extends State<HomeScreen>
                   end: Alignment.bottomCenter,
                   colors: [
                     _isNight
-                        ? Colors.black.withOpacity(0.65)
-                        : const Color(0xFF1E293B).withOpacity(0.12),
+                        ? Colors.black.withValues(alpha: 0.65)
+                        : const Color(0xFF1E293B).withValues(alpha: 0.12),
                     _isNight
-                        ? Colors.black.withOpacity(0.85)
-                        : const Color(0xFF0F172A).withOpacity(0.28),
+                        ? Colors.black.withValues(alpha: 0.85)
+                        : const Color(0xFF0F172A).withValues(alpha: 0.28),
                   ],
                 ),
               ),
@@ -640,39 +651,61 @@ class _HomeScreenState extends State<HomeScreen>
           SafeArea(
             child: GestureDetector(
               onTap: () => _searchFocusNode.unfocus(),
-              child: CustomScrollView(
-                controller: _scrollController,
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // ── Search Bar & GPS Button ──────────────
-                          _buildSearchBar(),
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  if (_currentWeather != null) {
+                    await _loadWeather(
+                      lat: _currentWeather!.lat != 0 ? _currentWeather!.lat : null,
+                      lon: _currentWeather!.lon != 0 ? _currentWeather!.lon : null,
+                      city: _currentWeather!.cityName,
+                    );
+                  } else {
+                    await _loadWeather(city: 'Jakarta');
+                  }
+                },
+                color: _accentColor,
+                backgroundColor: _isNight
+                    ? const Color(0xFF1E293B)
+                    : const Color(0xFF334155),
+                child: CustomScrollView(
+                  controller: _scrollController,
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 540),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                            // ── Search Bar & GPS Button ──────────────
+                            _buildSearchBar(),
 
-                          const SizedBox(height: 20),
+                            const SizedBox(height: 20),
 
-                          // ── Jam & Tanggal Real-time ──────────────
-                          _buildClockSection(),
+                            // ── Jam & Tanggal Real-time ──────────────
+                            _buildClockSection(),
 
-                          const SizedBox(height: 24),
+                            const SizedBox(height: 24),
 
-                          // ── Konten Cuaca (Loading / Error / Data) ─
-                          _buildWeatherContent(),
-                        ],
+                            // ── Konten Cuaca (Loading / Error / Data) ─
+                            _buildWeatherContent(),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+              ],
             ),
           ),
         ],
       ),
-    );
+    ],
+  ),
+);
   }
 
   // ============================================================
@@ -700,7 +733,7 @@ class _HomeScreenState extends State<HomeScreen>
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(_isNight ? 0.15 : 0.06),
+                      color: Colors.black.withValues(alpha: _isNight ? 0.15 : 0.06),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
@@ -719,12 +752,12 @@ class _HomeScreenState extends State<HomeScreen>
                   decoration: InputDecoration(
                     hintText: 'Search city...',
                     hintStyle: TextStyle(
-                      color: _onSurface.withOpacity(0.45),
+                      color: _onSurface.withValues(alpha: 0.45),
                       fontSize: 15,
                     ),
                     prefixIcon: Icon(
                       Icons.search_rounded,
-                      color: _onSurface.withOpacity(0.6),
+                      color: _onSurface.withValues(alpha: 0.6),
                       size: 22,
                     ),
                     suffixIcon: _isFetchingSuggestions
@@ -743,7 +776,7 @@ class _HomeScreenState extends State<HomeScreen>
                             ? IconButton(
                                 icon: Icon(
                                   Icons.close_rounded,
-                                  color: _onSurface.withOpacity(0.5),
+                                  color: _onSurface.withValues(alpha: 0.5),
                                   size: 20,
                                 ),
                                 onPressed: () {
@@ -773,17 +806,17 @@ class _HomeScreenState extends State<HomeScreen>
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      _accentColor.withOpacity(0.8),
-                      _accentColor.withOpacity(0.5),
+                      _accentColor.withValues(alpha: 0.8),
+                      _accentColor.withValues(alpha: 0.5),
                     ],
                   ),
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: Colors.white.withOpacity(0.3),
+                    color: Colors.white.withValues(alpha: 0.3),
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: _accentColor.withOpacity(0.4),
+                      color: _accentColor.withValues(alpha: 0.4),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
@@ -843,7 +876,7 @@ class _HomeScreenState extends State<HomeScreen>
             Text(
               'Searching location suggestions...',
               style: TextStyle(
-                color: _onSurface.withOpacity(0.7),
+                color: _onSurface.withValues(alpha: 0.7),
                 fontSize: 13,
               ),
             ),
@@ -865,13 +898,13 @@ class _HomeScreenState extends State<HomeScreen>
         child: Row(
           children: [
             Icon(Icons.search_off_rounded,
-                color: _onSurface.withOpacity(0.5), size: 18),
+                color: _onSurface.withValues(alpha: 0.5), size: 18),
             const SizedBox(width: 10),
             Expanded(
               child: Text(
                 'No locations found matching "$query"',
                 style: TextStyle(
-                  color: _onSurface.withOpacity(0.7),
+                  color: _onSurface.withValues(alpha: 0.7),
                   fontSize: 13,
                 ),
               ),
@@ -890,7 +923,7 @@ class _HomeScreenState extends State<HomeScreen>
         border: Border.all(color: _glassBorder),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(_isNight ? 0.2 : 0.08),
+            color: Colors.black.withValues(alpha: _isNight ? 0.2 : 0.08),
             blurRadius: 16,
             offset: const Offset(0, 6),
           ),
@@ -912,7 +945,7 @@ class _HomeScreenState extends State<HomeScreen>
                   Text(
                     'Suggested Locations',
                     style: TextStyle(
-                      color: _onSurface.withOpacity(0.8),
+                      color: _onSurface.withValues(alpha: 0.8),
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.5,
@@ -945,7 +978,7 @@ class _HomeScreenState extends State<HomeScreen>
                           Container(
                             padding: const EdgeInsets.all(6),
                             decoration: BoxDecoration(
-                              color: _accentColor.withOpacity(0.15),
+                              color: _accentColor.withValues(alpha: 0.15),
                               shape: BoxShape.circle,
                             ),
                             child: Icon(
@@ -979,7 +1012,7 @@ class _HomeScreenState extends State<HomeScreen>
                                         suggestion.country
                                     ].join(', '),
                                     style: TextStyle(
-                                      color: _onSurface.withOpacity(0.6),
+                                      color: _onSurface.withValues(alpha: 0.6),
                                       fontSize: 12,
                                     ),
                                   ),
@@ -988,7 +1021,7 @@ class _HomeScreenState extends State<HomeScreen>
                           ),
                           Icon(
                             Icons.north_west_rounded,
-                            color: _onSurface.withOpacity(0.35),
+                            color: _onSurface.withValues(alpha: 0.35),
                             size: 14,
                           ),
                         ],
@@ -1021,7 +1054,7 @@ class _HomeScreenState extends State<HomeScreen>
             border: Border.all(color: _glassBorder),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(_isNight ? 0.2 : 0.06),
+                color: Colors.black.withValues(alpha: _isNight ? 0.2 : 0.06),
                 blurRadius: 16,
                 offset: const Offset(0, 4),
               ),
@@ -1053,7 +1086,7 @@ class _HomeScreenState extends State<HomeScreen>
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.greenAccent.withOpacity(0.8),
+                                  color: Colors.greenAccent.withValues(alpha: 0.8),
                                   blurRadius: 6,
                                 ),
                               ],
@@ -1083,7 +1116,7 @@ class _HomeScreenState extends State<HomeScreen>
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w500,
-                          color: _onSurface.withOpacity(0.7),
+                          color: _onSurface.withValues(alpha: 0.7),
                         ),
                         textAlign: TextAlign.center,
                         overflow: TextOverflow.ellipsis,
@@ -1143,7 +1176,7 @@ class _HomeScreenState extends State<HomeScreen>
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w500,
-                          color: _onSurface.withOpacity(0.7),
+                          color: _onSurface.withValues(alpha: 0.7),
                         ),
                         textAlign: TextAlign.center,
                         overflow: TextOverflow.ellipsis,
@@ -1171,7 +1204,7 @@ class _HomeScreenState extends State<HomeScreen>
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
-              color: _onSurface.withOpacity(0.75),
+              color: _onSurface.withValues(alpha: 0.75),
               letterSpacing: 0.3,
             ),
           ),
@@ -1199,6 +1232,8 @@ class _HomeScreenState extends State<HomeScreen>
             _buildWeatherDetailsCard(),
             const SizedBox(height: 20),
             _buildForecastSection(),
+            const SizedBox(height: 16),
+            _buildAttributionFooter(),
             const SizedBox(height: 32),
           ],
         ),
@@ -1227,7 +1262,7 @@ class _HomeScreenState extends State<HomeScreen>
             Text(
               'Fetching weather data...',
               style: TextStyle(
-                color: _onSurface.withOpacity(0.7),
+                color: _onSurface.withValues(alpha: 0.7),
                 fontSize: 14,
               ),
             ),
@@ -1244,9 +1279,9 @@ class _HomeScreenState extends State<HomeScreen>
       margin: const EdgeInsets.symmetric(vertical: 20),
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.red.withOpacity(0.15),
+        color: Colors.red.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.red.withOpacity(0.3)),
+        border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
       ),
       child: Column(
         children: [
@@ -1270,8 +1305,8 @@ class _HomeScreenState extends State<HomeScreen>
             label: const Text('Try Again'),
             style: ElevatedButton.styleFrom(
               backgroundColor: _isNight
-                  ? Colors.white.withOpacity(0.2)
-                  : Colors.black.withOpacity(0.08),
+                  ? Colors.white.withValues(alpha: 0.2)
+                  : Colors.black.withValues(alpha: 0.08),
               foregroundColor: _onSurface,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -1298,12 +1333,12 @@ class _HomeScreenState extends State<HomeScreen>
         border: Border.all(color: _glassBorder, width: 1.0),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(_isNight ? 0.25 : 0.08),
+            color: Colors.black.withValues(alpha: _isNight ? 0.25 : 0.08),
             blurRadius: 32,
             offset: const Offset(0, 10),
           ),
           BoxShadow(
-            color: _accentColor.withOpacity(0.12),
+            color: _accentColor.withValues(alpha: 0.12),
             blurRadius: 20,
             spreadRadius: -4,
           ),
@@ -1361,8 +1396,8 @@ class _HomeScreenState extends State<HomeScreen>
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      _accentColor.withOpacity(0.35),
-                      _accentColor.withOpacity(0.0),
+                      _accentColor.withValues(alpha: 0.35),
+                      _accentColor.withValues(alpha: 0.0),
                     ],
                   ),
                 ),
@@ -1376,7 +1411,7 @@ class _HomeScreenState extends State<HomeScreen>
                   border: Border.all(color: _glassBorderSubtle, width: 1.0),
                   boxShadow: [
                     BoxShadow(
-                      color: _accentColor.withOpacity(0.3),
+                      color: _accentColor.withValues(alpha: 0.3),
                       blurRadius: 24,
                       spreadRadius: 2,
                     ),
@@ -1402,7 +1437,7 @@ class _HomeScreenState extends State<HomeScreen>
               letterSpacing: -1,
               shadows: [
                 Shadow(
-                  color: Colors.black.withOpacity(0.4),
+                  color: Colors.black.withValues(alpha: 0.4),
                   blurRadius: 12,
                   offset: const Offset(0, 3),
                 ),
@@ -1416,12 +1451,12 @@ class _HomeScreenState extends State<HomeScreen>
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
             decoration: BoxDecoration(
-              color: _accentColor.withOpacity(0.28),
+              color: _accentColor.withValues(alpha: 0.28),
               borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: _accentColor.withOpacity(0.6), width: 1.2),
+              border: Border.all(color: _accentColor.withValues(alpha: 0.6), width: 1.2),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.15),
+                  color: Colors.black.withValues(alpha: 0.15),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
@@ -1454,54 +1489,51 @@ class _HomeScreenState extends State<HomeScreen>
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: _glassBorderSubtle),
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.arrow_downward_rounded,
-                    size: 13, color: Color(0xFF64B5F6)),
-                const SizedBox(width: 2),
-                Text(
-                  '${weather.tempMin.round()}°',
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.arrow_downward_rounded,
+                      size: 13, color: Color(0xFF64B5F6)),
+                  const SizedBox(width: 2),
+                  Text(
+                    '${weather.tempMin.round()}°',
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-                Text(
-                  '  •  ',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.white.withOpacity(0.5),
+                  const SizedBox(width: 6),
+                  const Icon(Icons.arrow_upward_rounded,
+                      size: 13, color: Color(0xFFFFB74D)),
+                  const SizedBox(width: 2),
+                  Text(
+                    '${weather.tempMax.round()}°',
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-                const Icon(Icons.arrow_upward_rounded,
-                    size: 13, color: Color(0xFFFFB74D)),
-                const SizedBox(width: 2),
-                Text(
-                  '${weather.tempMax.round()}°',
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
+                  Text(
+                    '  •  ',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.white.withValues(alpha: 0.5),
+                    ),
                   ),
-                ),
-                Text(
-                  '  •  ',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.white.withOpacity(0.5),
+                  Text(
+                    'Feels like ${weather.feelsLike.round()}°C',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-                Text(
-                  'Feels like ${weather.feelsLike.round()}°C',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],
@@ -1524,7 +1556,7 @@ class _HomeScreenState extends State<HomeScreen>
         border: Border.all(color: _glassBorder, width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(_isNight ? 0.2 : 0.06),
+            color: Colors.black.withValues(alpha: _isNight ? 0.2 : 0.06),
             blurRadius: 20,
             offset: const Offset(0, 6),
           ),
@@ -1543,7 +1575,7 @@ class _HomeScreenState extends State<HomeScreen>
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
-                  color: _onSurface.withOpacity(0.75),
+                  color: _onSurface.withValues(alpha: 0.75),
                   letterSpacing: 1.2,
                 ),
               ),
@@ -1605,38 +1637,38 @@ class _HomeScreenState extends State<HomeScreen>
     required String subtitle,
   }) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
       decoration: BoxDecoration(
         color: _glassBackgroundSubtle,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(18),
         border: Border.all(color: _glassBorderSubtle),
       ),
       child: Row(
         children: [
-          // Kiri: Icon Container yang solid & agak besar
+          // Kiri: Icon Container
           Container(
-            width: 44,
-            height: 44,
+            width: 38,
+            height: 38,
             decoration: BoxDecoration(
-              color: _accentColor.withOpacity(0.18),
-              borderRadius: BorderRadius.circular(14),
+              color: _accentColor.withValues(alpha: 0.18),
+              borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: _accentColor.withOpacity(0.3),
+                color: _accentColor.withValues(alpha: 0.3),
                 width: 1,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: _accentColor.withOpacity(0.12),
-                  blurRadius: 8,
+                  color: _accentColor.withValues(alpha: 0.12),
+                  blurRadius: 6,
                 ),
               ],
             ),
             child: Center(
-              child: Text(icon, style: const TextStyle(fontSize: 22)),
+              child: Text(icon, style: const TextStyle(fontSize: 19)),
             ),
           ),
 
-          const SizedBox(width: 10),
+          const SizedBox(width: 8),
 
           // Kanan: Tulisan Label (Atas) & Angka Nilai (Bawah)
           Expanded(
@@ -1644,19 +1676,25 @@ class _HomeScreenState extends State<HomeScreen>
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text(
                   label,
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
-                    color: _onSurface.withOpacity(0.7),
+                    color: _onSurface.withValues(alpha: 0.7),
                     letterSpacing: 0.2,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                ),
+                )),
                 const SizedBox(height: 3),
-                Text(
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text(
                   value,
                   style: TextStyle(
                     fontSize: 16,
@@ -1665,14 +1703,14 @@ class _HomeScreenState extends State<HomeScreen>
                     letterSpacing: 0.3,
                     shadows: [
                       Shadow(
-                        color: Colors.black.withOpacity(0.3),
+                        color: Colors.black.withValues(alpha: 0.3),
                         blurRadius: 4,
                       ),
                     ],
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                ),
+                )),
               ],
             ),
           ),
@@ -1706,7 +1744,7 @@ class _HomeScreenState extends State<HomeScreen>
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
-                  color: _onSurface.withOpacity(0.85),
+                  color: _onSurface.withValues(alpha: 0.85),
                   letterSpacing: 1.2,
                 ),
               ),
@@ -1728,7 +1766,7 @@ class _HomeScreenState extends State<HomeScreen>
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
       decoration: BoxDecoration(
         color: _glassBackgroundSubtle,
         borderRadius: BorderRadius.circular(20),
@@ -1738,7 +1776,7 @@ class _HomeScreenState extends State<HomeScreen>
         children: [
           // Hari & Tanggal
           SizedBox(
-            width: 76,
+            width: 68,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -1755,7 +1793,7 @@ class _HomeScreenState extends State<HomeScreen>
                   dateStr,
                   style: TextStyle(
                     fontSize: 11,
-                    color: _onSurface.withOpacity(0.55),
+                    color: _onSurface.withValues(alpha: 0.55),
                   ),
                 ),
               ],
@@ -1764,15 +1802,15 @@ class _HomeScreenState extends State<HomeScreen>
 
           // Emoji Cuaca
           Container(
-            padding: const EdgeInsets.all(6),
+            padding: const EdgeInsets.all(5),
             decoration: BoxDecoration(
-              color: _accentColor.withOpacity(0.12),
+              color: _accentColor.withValues(alpha: 0.12),
               shape: BoxShape.circle,
             ),
             child: Text(emoji, style: const TextStyle(fontSize: 20)),
           ),
 
-          const SizedBox(width: 10),
+          const SizedBox(width: 8),
 
           // Deskripsi Cuaca
           Expanded(
@@ -1784,12 +1822,16 @@ class _HomeScreenState extends State<HomeScreen>
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: _onSurface.withOpacity(0.85),
+                    color: _onSurface.withValues(alpha: 0.85),
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 2),
-                Row(
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
                       Icons.water_drop_outlined,
@@ -1800,7 +1842,7 @@ class _HomeScreenState extends State<HomeScreen>
                       ' ${day.humidity}%',
                       style: TextStyle(
                         fontSize: 11,
-                        color: _onSurface.withOpacity(0.6),
+                        color: _onSurface.withValues(alpha: 0.6),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -1813,11 +1855,11 @@ class _HomeScreenState extends State<HomeScreen>
                       ' $windKmh km/h',
                       style: TextStyle(
                         fontSize: 11,
-                        color: _onSurface.withOpacity(0.6),
+                        color: _onSurface.withValues(alpha: 0.6),
                       ),
                     ),
                   ],
-                ),
+                )),
               ],
             ),
           ),
@@ -1835,12 +1877,12 @@ class _HomeScreenState extends State<HomeScreen>
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
-                      color: _onSurface.withOpacity(0.6),
+                      color: _onSurface.withValues(alpha: 0.6),
                     ),
                   ),
                   Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 6),
-                    width: 32,
+                    margin: const EdgeInsets.symmetric(horizontal: 4),
+                    width: 24,
                     height: 4,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(2),
@@ -1875,5 +1917,32 @@ class _HomeScreenState extends State<HomeScreen>
   String _capitalize(String text) {
     if (text.isEmpty) return text;
     return text[0].toUpperCase() + text.substring(1);
+  }
+
+  // ── Attribution Footer ─────────────────────────────────────────
+
+  Widget _buildAttributionFooter() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8, top: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.cloud_outlined,
+            size: 11,
+            color: _onSurface.withValues(alpha: 0.35),
+          ),
+          const SizedBox(width: 5),
+          Text(
+            'Powered by OpenWeatherMap',
+            style: TextStyle(
+              fontSize: 10,
+              color: _onSurface.withValues(alpha: 0.35),
+              letterSpacing: 0.3,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

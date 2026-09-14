@@ -1,5 +1,5 @@
-name: auralangit
-description: "AuraLangit - Beautiful weather app with local storage."
+name: skyaura
+description: "SkyAura - Precise & elegant weather app with glassmorphism UI."
 publish_to: 'none'
 
 version: 1.0.0+1
@@ -17,6 +17,7 @@ dependencies:
   http: ^1.2.0
   shared_preferences: ^2.3.3
   intl: ^0.20.1
+  connectivity_plus: ^6.0.0
   
 
 dev_dependencies:
@@ -35,5 +36,5 @@ flutter:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/images/icon.png" # Pastikan path ini sesuai dengan folder baru
-  # min_sdk_android: 21 # (Opsional) bisa ditambahkan jika perlu
+  image_path: "assets/images/icon.png"
+  min_sdk_android: 23

@@ -1,6 +1,6 @@
-# ⛅ AuraLangit - Modern Atmospheric Weather App
+# ⛅ SkyAura - Modern Atmospheric Weather App
 
-**AuraLangit** is a state-of-the-art, modern weather application built with **Flutter** featuring dynamic atmospheric background imagery, real-time multi-engine geocoding location lookup, high-contrast **Glassmorphism UI**, and 100% English localization.
+**SkyAura** is a state-of-the-art, modern weather application built with **Flutter** featuring dynamic atmospheric background imagery, real-time multi-engine geocoding location lookup, high-contrast **Glassmorphism UI**, and 100% English localization.
 
 ---
 
@@ -63,7 +63,7 @@ lib/
 ### 1. Clone Repository & Install Dependencies
 ```bash
 git clone <repository-url>
-cd auralangit
+cd skyaura
 flutter pub get
 ```
 
@@ -71,10 +71,11 @@ flutter pub get
 The application includes an automatic **Mock Data Fallback** engine if no API Key is provided. To connect to live OpenWeatherMap servers:
 1. Obtain an API Key from [OpenWeatherMap](https://openweathermap.org/api).
 2. Open `lib/weather_service.dart`.
-3. Set your API Key in line 315:
-   ```dart
-   static const String _apiKey = 'YOUR_API_KEY_HERE';
-   ```
+   3. Open `lib/weather_service.dart`.
+   4. Set your API Key via `--dart-define` when running:
+      ```bash
+      flutter run --dart-define=OWM_API_KEY=YOUR_API_KEY_HERE
+      ```
 
 ### 3. Run Development Build
 ```bash
@@ -105,9 +106,9 @@ flutter build apk --split-per-abi
 If you would like to share this project on LinkedIn or your developer portfolio, feel free to use the following post template:
 
 ```text
-🚀 AuraLangit: Elevating Weather App Design with Flutter & Glassmorphic UI! ⛅
+🚀 SkyAura: Elevating Weather App Design with Flutter & Glassmorphic UI! ⛅
 
-Excited to share AuraLangit, a modern weather application featuring dynamic atmospheric sky imagery, high-contrast Glassmorphic UI, and real-time multi-engine location geocoding!
+Excited to share SkyAura, a modern weather application featuring dynamic atmospheric sky imagery, high-contrast Glassmorphic UI, and real-time multi-engine location geocoding!
 
 Built using Flutter & Dart, the project focuses on delivering a seamless user experience with high-fidelity visuals. Key highlights include:
 
@@ -122,7 +123,7 @@ Technologies Used: Flutter, Dart, OpenWeatherMap API, Photon API, Geolocator, Sh
 
 Would love to hear your thoughts on the UI & architecture! 👇
 
-#Flutter #Dart #MobileDevelopment #UIUX #Glassmorphism #AuraLangit #OpenSource #DeveloperShowcase
+#Flutter #Dart #MobileDevelopment #UIUX #Glassmorphism #SkyAura #OpenSource #DeveloperShowcase
 ```
 
 ---

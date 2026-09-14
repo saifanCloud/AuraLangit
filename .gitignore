@@ -46,3 +46,9 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Android Keystore & Signing (JANGAN di-commit!)
+android/key.jks
+android/key.properties
+*.jks
+*.keystore

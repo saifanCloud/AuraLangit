@@ -310,9 +310,14 @@ List<ForecastDay> _buildMockForecast() {
 // ============================================================
 
 class WeatherService {
-  // ★ GANTI DENGAN API KEY ANDA DARI https://openweathermap.org/api
-  // Jika dikosongkan, aplikasi akan menggunakan MOCK DATA secara otomatis.
-  static const String _apiKey = 'db28dbd0c06f111415709eb02afac4d5';
+  // API Key diambil dari dart-define saat build (lebih aman, tidak hardcoded di source).
+  // Development: flutter run --dart-define=OWM_API_KEY=xxxxxxxx
+  // Release build: flutter build apk --release --dart-define=OWM_API_KEY=xxxxxxxx
+  // Fallback ke key default jika dart-define tidak diset (untuk kemudahan development).
+  static const String _apiKey = String.fromEnvironment(
+    'OWM_API_KEY',
+    defaultValue: 'db28dbd0c06f111415709eb02afac4d5',
+  );
 
   static const String _baseUrl = 'https://api.openweathermap.org/data/2.5';
 
@@ -664,7 +669,7 @@ class WeatherService {
         );
         final response = await http.get(
           uri,
-          headers: {'User-Agent': 'AuraLangitWeatherApp/1.0'},
+          headers: {'User-Agent': 'SkyAuraWeatherApp/1.0'},
         ).timeout(const Duration(seconds: 4));
 
         if (response.statusCode == 200) {

@@ -1,6 +1,6 @@
 // lib/main.dart
 //
-// Entry point aplikasi AuraLangit.
+// Entry point aplikasi SkyAura.
 // Menginisialisasi localization (intl), mengatur orientasi,
 // dan menerapkan Dynamic Theming (siang/malam) via ValueNotifier.
 
@@ -23,11 +23,11 @@ Future<void> main() async {
     DeviceOrientation.portraitDown,
   ]);
 
-  runApp(const AuraLangitApp());
+  runApp(const SkyAuraApp());
 }
 
-class AuraLangitApp extends StatelessWidget {
-  const AuraLangitApp({super.key});
+class SkyAuraApp extends StatelessWidget {
+  const SkyAuraApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +49,7 @@ class AuraLangitApp extends StatelessWidget {
 
         return MaterialApp(
           // ── Identitas Aplikasi ──────────────────────────────────
-          title: 'AuraLangit',
+          title: 'SkyAura',
           debugShowCheckedModeBanner: false,
 
           // ── Tema Dinamis ─────────────────────────────────────────

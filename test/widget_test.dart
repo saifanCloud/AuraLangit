@@ -1,12 +1,12 @@
 // test/widget_test.dart
 //
-// Unit & widget tests untuk aplikasi AuraLangit.
+// Unit & widget tests untuk aplikasi SkyAura.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:auralangit/weather_service.dart';
-import 'package:auralangit/splash_screen.dart';
+import 'package:skyaura/weather_service.dart';
+import 'package:skyaura/splash_screen.dart';
 
 void main() {
   setUpAll(() async {
@@ -99,8 +99,8 @@ void main() {
         );
         
         // Memastikan teks penting pada SplashScreen dirender
+        expect(find.text('SKY'), findsOneWidget);
         expect(find.text('AURA'), findsOneWidget);
-        expect(find.text('LANGIT'), findsOneWidget);
         
         // Biarkan timer splash screen selesai (3 detik + buffer)
         await Future.delayed(const Duration(seconds: 4));

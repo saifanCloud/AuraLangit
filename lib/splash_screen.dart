@@ -143,7 +143,7 @@ class _SplashScreenState extends State<SplashScreen>
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.04),
+                            color: Colors.black.withValues(alpha: 0.04),
                             blurRadius: 16,
                             offset: const Offset(0, 4),
                           ),
@@ -158,7 +158,7 @@ class _SplashScreenState extends State<SplashScreen>
 
                     // ── Nama Aplikasi Bersih ──────────────────────────
                     const Text(
-                      'AURA',
+                      'SKY',
                       style: TextStyle(
                         fontSize: 36,
                         fontWeight: FontWeight.w800,
@@ -169,7 +169,7 @@ class _SplashScreenState extends State<SplashScreen>
                     ),
                     const SizedBox(height: 4),
                     const Text(
-                      'LANGIT',
+                      'AURA',
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.w300,
@@ -182,7 +182,7 @@ class _SplashScreenState extends State<SplashScreen>
 
                     // ── Tagline ────────────────────────────────
                     const Text(
-                      'Precise & Elegant Weather App',
+                      'Precise & Elegant Sky Intelligence',
                       style: TextStyle(
                         fontSize: 12,
                         color: Color(0xFF94A3B8),
