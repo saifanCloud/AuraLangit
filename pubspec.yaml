@@ -18,7 +18,7 @@ dependencies:
   shared_preferences: ^2.3.3
   intl: ^0.20.1
   connectivity_plus: ^6.0.0
-  
+  flutter_dotenv: ^5.2.1
 
 dev_dependencies:
   flutter_test:
@@ -28,10 +28,9 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-  # Tambahkan baris di bawah ini agar folder assets terbaca oleh Flutter
   assets:
-    - assets/images/ 
-    # Atau - assets/icons/ sesuaikan dengan nama folder yang kamu pakai
+    - assets/images/
+    - .env
 
 flutter_launcher_icons:
   android: "launcher_icon"

@@ -6,6 +6,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'splash_screen.dart';
 import 'theme_notifier.dart';
@@ -13,6 +14,13 @@ import 'theme_notifier.dart';
 Future<void> main() async {
   // Pastikan Flutter engine sudah siap sebelum memanggil platform API
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Load environment variables dari .env (jika ada)
+  try {
+    await dotenv.load(fileName: '.env');
+  } catch (e) {
+    debugPrint('Informasi: File .env tidak ditemukan atau gagal dimuat: $e');
+  }
 
   // Inisialisasi data lokal Bahasa Inggris (en_US) untuk intl (hari, bulan, dll.)
   await initializeDateFormatting('en_US', null);

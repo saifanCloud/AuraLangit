@@ -9,6 +9,7 @@ import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 // ============================================================
 // DATA MODELS
@@ -310,14 +311,17 @@ List<ForecastDay> _buildMockForecast() {
 // ============================================================
 
 class WeatherService {
-  // API Key diambil dari dart-define saat build (lebih aman, tidak hardcoded di source).
-  // Development: flutter run --dart-define=OWM_API_KEY=xxxxxxxx
-  // Release build: flutter build apk --release --dart-define=OWM_API_KEY=xxxxxxxx
-  // Fallback ke key default jika dart-define tidak diset (untuk kemudahan development).
-  static const String _apiKey = String.fromEnvironment(
-    'OWM_API_KEY',
-    defaultValue: 'db28dbd0c06f111415709eb02afac4d5',
-  );
+  // API Key diambil secara dinamis dengan prioritas:
+  // 1. File .env via flutter_dotenv (OWM_API_KEY)
+  // 2. dart-define (--dart-define=OWM_API_KEY=... atau --dart-define-from-file=.env)
+  // 3. String kosong (fallback otomatis ke mock data jika key belum diset)
+  static String get _apiKey {
+    final envKey = dotenv.env['OWM_API_KEY'];
+    if (envKey != null && envKey.isNotEmpty) {
+      return envKey;
+    }
+    return const String.fromEnvironment('OWM_API_KEY', defaultValue: '');
+  }
 
   static const String _baseUrl = 'https://api.openweathermap.org/data/2.5';
 

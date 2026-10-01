@@ -111,7 +111,6 @@ class _SplashScreenState extends State<SplashScreen>
         child: Container(
           width: double.infinity,
           height: double.infinity,
-          // ── Latar Belakang Putih Minimalis & Profesional ──────────────────────
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
@@ -130,7 +129,6 @@ class _SplashScreenState extends State<SplashScreen>
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // ── Ikon / Emoji Cuaca Minimalis ─────────────────────
                     Container(
                       width: 100,
                       height: 100,
@@ -156,7 +154,6 @@ class _SplashScreenState extends State<SplashScreen>
 
                     const SizedBox(height: 32),
 
-                    // ── Nama Aplikasi Bersih ──────────────────────────
                     const Text(
                       'SKY',
                       style: TextStyle(

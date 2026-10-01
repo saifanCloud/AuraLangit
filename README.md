@@ -1,132 +1,192 @@
-# ⛅ SkyAura - Modern Atmospheric Weather App
+# ⛅ SkyAura
 
-**SkyAura** is a state-of-the-art, modern weather application built with **Flutter** featuring dynamic atmospheric background imagery, real-time multi-engine geocoding location lookup, high-contrast **Glassmorphism UI**, and 100% English localization.
+<div align="center">
+
+  ![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)
+  ![Dart](https://img.shields.io/badge/Dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)
+  ![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)
+  ![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)
+
+  <p align="center">
+    <strong>A modern, atmospheric weather application built with Flutter featuring real-time geocoding, high-contrast glassmorphism UI, and fluid animations.</strong>
+  </p>
+
+  <p align="center">
+    <a href="#-key-features">Key Features</a> •
+    <a href="#-ui-design--visuals">UI Design</a> •
+    <a href="#-architecture">Architecture</a> •
+    <a href="#-tech-stack">Tech Stack</a> •
+    <a href="#-getting-started">Getting Started</a>
+  </p>
+
+</div>
 
 ---
 
-## 🌟 Overview & Key Features
+## 📖 Overview
 
-- **🌤️ Dynamic Atmospheric Sky Backgrounds**:
-  Real-time adaptive sky imagery layered with atmospheric dark slate gradient overlays according to live weather status (Clear, Clouds, Rain, Thunderstorm, Snow, Night).
-- **🌍 Automated Multi-Engine Geocoding Search**:
-  Powered by **OpenWeather Direct Geocoding API** + **Photon OpenStreetMap Geocoding API (`photon.komoot.io`)** to support real-time dynamic searches for cities, regencies, sub-districts (*kecamatan*), and villages globally.
-- **🎯 Exact Coordinate Weather Resolution (`lat/lon`)**:
-  Resolves weather data via exact GPS coordinates returned by geocoding services, guaranteeing 100% location accuracy for any sub-district or village.
-- **✨ Ultra-Sharp High-Contrast Glassmorphism UI**:
-  Frosted dark glass card tints (`#334155` Slate Cloud Grey) paired with subtle text drop shadows to deliver 100% crisp, readable typography across all background conditions.
-- **📊 Responsive Bento Details Grid**:
-  Solid 44x44px accent icon container on the left, with label text at top-right and bold numerical metrics centered below—preventing any text truncation (`...`).
-- **📍 Smart Multi-line Location Name Formatting**:
-  Cleans redundant administrative prefixes (*Special Region of*, *Kab.*, *DI*) and supports 2-line responsive text wrapping for long location names.
-- **🕒 Dual Live Clock & Local Time Sync**:
-  Displays device GPS time alongside destination city target time synced via OpenWeather UTC timezone offsets.
-- **📅 7-Day Forecast Visual Bar**:
-  Daily temperature range bars featuring smooth linear color gradients (blue to orange) to compare minimum and maximum temperatures at a glance.
-- **🌐 100% English Localization**:
-  Fully localized using `en_US` date formatting and OpenWeather `lang=en` API parameters.
+**SkyAura** is a showcase Flutter weather application designed to deliver an immersive weather-tracking experience. By blending real-world atmospheric conditions with modern **Glassmorphism UI** aesthetics and a responsive **Bento Grid** layout, SkyAura demonstrates production-ready mobile application architecture, clean state management, and robust API integration.
+
+---
+
+## ✨ Key Features
+
+- **🌤️ Adaptive Atmospheric Backdrops**  
+  Dynamic background imagery and layered gradient overlays seamlessly transition according to live weather conditions (*Clear, Clouds, Rain, Thunderstorm, Snow*) and day/night cycles.
+
+- **🌍 Dual-Engine Geocoding Location Search**  
+  Integrates **OpenWeather Direct Geocoding** with **Photon (OpenStreetMap)** to provide global search capabilities down to sub-districts (*kecamatan*) and administrative villages.
+
+- **🎯 Exact Coordinate Weather Resolution**  
+  Resolves live weather metrics using precise GPS latitude and longitude (`lat/lon`), ensuring pinpoint accuracy for any location.
+
+- **💎 High-Contrast Glassmorphism UI**  
+  Custom-tuned frosted glass cards (`#334155` Slate Cloud Tint) combined with subtle drop shadows to ensure AAA typography readability across all visual backdrops.
+
+- **📊 Responsive Bento Grid Metrics**  
+  Structured detail cards displaying humidity, wind speed, visibility, and feels-like temperature with dedicated icon badges—guaranteeing zero text clipping across various screen sizes.
+
+- **🕒 Dual Live Clock & Timezone Sync**  
+  Simultaneously displays current device time alongside the searched city’s local time using real-time UTC timezone offsets.
+
+- **📅 7-Day Forecast with Visual Gradient Bars**  
+  Presents weekly weather projections with intuitive min/max temperature gradient indicator bars.
+
+- **🛡️ Resilient Offline Mock Fallback**  
+  Automatic graceful fallback to mock data when network access is unavailable or an API key is missing, ensuring the application remains interactive and testable at all times.
+
+---
+
+## 🎨 UI Design & Visuals
+
+> 💡 *Tip: Place your app screenshots inside an `assets/screenshots/` folder to preview them directly here.*
+
+<div align="center">
+  <table border="0">
+    <tr>
+      <td align="center" width="33%">
+        <img src="assets/images/icon.png" width="120px" alt="App Icon"/><br/>
+        <b>SkyAura Icon</b>
+      </td>
+      <td align="center" width="33%">
+        <i>[ Add Home Light Mode Screenshot ]</i><br/>
+        <b>Light Atmosphere</b>
+      </td>
+      <td align="center" width="33%">
+        <i>[ Add Home Night Mode Screenshot ]</i><br/>
+        <b>Night Atmosphere</b>
+      </td>
+    </tr>
+  </table>
+</div>
+
+---
+
+## 🏗️ Architecture & Project Structure
+
+The project follows clean architectural principles with strict separation between UI, business logic, and external services:
+
+```text
+lib/
+├── main.dart             # App initialization, environment loading, system overlay & theme setup
+├── splash_screen.dart    # Animated branding screen with preload sequence
+├── home_screen.dart      # Main dashboard (Glassmorphic cards, Bento grid, Search & Forecast)
+├── theme_notifier.dart   # Reactive theme state management using ValueNotifier
+└── weather_service.dart  # Data layer: OpenWeatherMap API, Photon Geocoding & Mock Engine
+```
+
+### Architectural Highlights:
+- **Service Layer Pattern**: Network calls and data parsers are encapsulated inside `WeatherService`, decoupled from widget lifecycles.
+- **Reactive State Management**: Uses lightweight, memory-efficient `ValueNotifier` for immediate theme switching without bloated boilerplate.
+- **Defensive Error Handling**: All network requests implement timeout guards, descriptive exception mappings, and offline fallbacks.
 
 ---
 
 ## 🛠️ Tech Stack & Dependencies
 
-| Library / Package | Version | Purpose |
-| :--- | :--- | :--- |
-| [`flutter`](https://flutter.dev) | SDK `^3.12.0` | Cross-platform UI Framework |
-| [`http`](https://pub.dev/packages/http) | `^1.2.0` | Asynchronous HTTP requests to OpenWeatherMap & Photon APIs |
-| [`geolocator`](https://pub.dev/packages/geolocator) | `^13.0.2` | Real-time device GPS positioning & permissions |
-| [`geocoding`](https://pub.dev/packages/geocoding) | `^3.0.0` | Native reverse geocoding from GPS coordinates to location names |
-| [`shared_preferences`](https://pub.dev/packages/shared_preferences) | `^2.3.3` | Persistent local storage for recent searched city |
-| [`intl`](https://pub.dev/packages/intl) | `^0.20.1` | Date and time formatting in `en_US` locale |
+| Technology | Purpose |
+| :--- | :--- |
+| **[Flutter](https://flutter.dev/) (v3.x)** | Cross-platform framework for UI and business logic |
+| **[Dart](https://dart.dev/) (v3.x)** | Strongly-typed client-optimized language |
+| **[`http`](https://pub.dev/packages/http)** | RESTful API client for OpenWeatherMap and Photon services |
+| **[`geolocator`](https://pub.dev/packages/geolocator)** | Native GPS hardware location querying and permission handling |
+| **[`geocoding`](https://pub.dev/packages/geocoding)** | Native reverse geocoding from coordinates to human-readable names |
+| **[`flutter_dotenv`](https://pub.dev/packages/flutter_dotenv)** | Secure runtime management of environment variables and API keys |
+| **[`shared_preferences`](https://pub.dev/packages/shared_preferences)** | Lightweight local key-value persistence for search history |
+| **[`intl`](https://pub.dev/packages/intl)** | Internationalization, date manipulation, and time formatting |
 
 ---
 
-## 📁 Project Architecture (`lib/`)
+## 🚀 Getting Started
 
-```text
-lib/
-│
-├── main.dart             # Application entry point, system overlay configuration, intl initialization, and MaterialApp theme builder.
-├── splash_screen.dart    # Intro splash screen with animated scale/fade transitions and local storage pre-loading.
-├── home_screen.dart      # Main dashboard containing Search Bar, Live Clocks, Glassmorphic Hero Weather Card, Bento Grid Details, and 7-Day Forecast.
-├── theme_notifier.dart   # ValueNotifier state management for instant day/night dynamic theme switching.
-└── weather_service.dart  # Data layer for OpenWeatherMap API, Photon Geocoding API, GPS permission handling, and Mock Data Fallback engine.
-```
-
----
-
-## 🚀 How to Run Locally
+Follow these steps to set up and run SkyAura locally on your machine.
 
 ### Prerequisites
-- Flutter SDK installed (`>= 3.12.0`).
-- Android Emulator / Physical Device connected with USB Debugging enabled.
+- [Flutter SDK](https://docs.flutter.dev/get-started/install) (`>= 3.12.0`)
+- Android Studio / VS Code with Flutter extension
+- Connected physical device or Android emulator (API level 23+)
 
-### 1. Clone Repository & Install Dependencies
+### 1. Clone the Repository
 ```bash
-git clone <repository-url>
-cd skyaura
+git clone https://github.com/your-username/SkyAura.git
+cd SkyAura
+```
+
+### 2. Install Dependencies
+```bash
 flutter pub get
 ```
 
-### 2. Configure API Key (Optional)
-The application includes an automatic **Mock Data Fallback** engine if no API Key is provided. To connect to live OpenWeatherMap servers:
-1. Obtain an API Key from [OpenWeatherMap](https://openweathermap.org/api).
-2. Open `lib/weather_service.dart`.
-   3. Open `lib/weather_service.dart`.
-   4. Set your API Key via `--dart-define` when running:
-      ```bash
-      flutter run --dart-define=OWM_API_KEY=YOUR_API_KEY_HERE
-      ```
+### 3. Configure Environment Variables
+SkyAura uses `.env` to securely manage API credentials. A template file `.env.example` is provided:
 
-### 3. Run Development Build
+1. Copy the example configuration:
+   ```bash
+   cp .env.example .env
+   ```
+2. Open `.env` and insert your [OpenWeatherMap API Key](https://home.openweathermap.org/api_keys):
+   ```env
+   OWM_API_KEY=your_actual_api_key_here
+   ```
+   *(Note: If you do not have an API key right away, the app will automatically launch with rich mock data).*
+
+### 4. Run the Application
 ```bash
 flutter run
 ```
 
 ---
 
-## 📦 Building Android APK Release
+## 📦 Production Build
 
-To generate the production Release APK for Android devices:
+To build an optimized production APK for Android:
 
-### Universal Release APK
 ```bash
+# Build universal APK
 flutter build apk --release
-```
-*Output File:* `build/app/outputs/flutter-apk/app-release.apk`
 
-### Split ABI APKs (Smaller file size per CPU architecture)
-```bash
+# Build split-per-ABI APKs (smaller file size)
 flutter build apk --split-per-abi
 ```
 
+The compiled release file will be located at:
+`build/app/outputs/flutter-apk/app-release.apk`
+
 ---
 
-## 📱 LinkedIn / Social Media Showcase
+## 🔒 Security & Best Practices
 
-If you would like to share this project on LinkedIn or your developer portfolio, feel free to use the following post template:
-
-```text
-🚀 SkyAura: Elevating Weather App Design with Flutter & Glassmorphic UI! ⛅
-
-Excited to share SkyAura, a modern weather application featuring dynamic atmospheric sky imagery, high-contrast Glassmorphic UI, and real-time multi-engine location geocoding!
-
-Built using Flutter & Dart, the project focuses on delivering a seamless user experience with high-fidelity visuals. Key highlights include:
-
-✨ Key Features:
-1️⃣ Glassmorphic UI – Clean, semi-transparent frosted slate glass cards (#334155) with subtle text drop shadows for AAA contrast readability.
-2️⃣ Automated Multi-Engine Geocoding – Integrated OpenWeather Direct Geo & Photon OpenStreetMap APIs (photon.komoot.io) for instant location search across sub-districts and cities worldwide.
-3️⃣ Coordinates Weather Resolution – Fetches weather via exact lat/lon coordinates for 100% accuracy.
-4️⃣ Live Dual Clocks – Displays local device GPS time alongside destination target time synced with UTC offsets.
-5️⃣ Bento Details & 7-Day Forecast – Responsive 2x2 Bento grid metrics and 7-day temperature range visual gradient bars.
-
-Technologies Used: Flutter, Dart, OpenWeatherMap API, Photon API, Geolocator, Shared Preferences, Intl.
-
-Would love to hear your thoughts on the UI & architecture! 👇
-
-#Flutter #Dart #MobileDevelopment #UIUX #Glassmorphism #SkyAura #OpenSource #DeveloperShowcase
-```
+- **Zero Hardcoded Secrets**: Sensitive API keys are strictly excluded from version control using `.gitignore` and loaded dynamically via `flutter_dotenv`.
+- **Linted Codebase**: Adheres to official Flutter style conventions and best practices validated with `flutter analyze`.
 
 ---
 
 ## 📄 License
-This project is open-source and available under the MIT License.
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+<div align="center">
+  <sub>Crafted with passion using Flutter & Dart. Star ⭐ this repository if you find it helpful!</sub>
+</div>

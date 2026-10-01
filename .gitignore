@@ -52,3 +52,9 @@ android/key.jks
 android/key.properties
 *.jks
 *.keystore
+
+# Environment Variables & Secrets (JANGAN di-commit!)
+.env
+.env.*
+!.env.example
+
